@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>    
+    <meta charset="UTF-8">
+    <meta content='width=device-width, initial-scale=1, user-scalable=no' name='viewport'/>
+    <meta property="og:title" content="구글로 검색해봅시다">
+    <meta property="og:image" content="google_logo.png">
+    <meta property="og:description" content="구글로 검색해봅시다">
+    <title>구글로 검색해봅시다</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width:100%;
+            height: 100%;
+        }
+
+        body {
+            font-family:Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color:#333;
+        }
+        .root {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .header {
+            position:absolute;
+            top:10px;
+            right:10px;
+        }
+
+        .header  img {
+            width:30px;
+            height:30px;
+        }
+
+        .logo, .search-box  {
+            max-width:400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-top: 180px;
+        }
+
+        .logo img {
+            width: 270px;
+            padding: 20px;
+        }
+
+        .search-box {
+            width: 90%;
+            text-align: center;
+        }
+
+        .search-box input {
+            width: 90%;
+            height: 45px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            outline: none;
+        }
+
+        .search-buttons button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 1px solid #f8f9fa;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .search-buttons button.active {
+            background: #ccc;
+        }
+
+        .cover {
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index: 9999;
+        }
+
+        .cursor {
+            position:absolute;
+            top:0;
+            left:0;
+        }
+
+        .cursor > * {
+            width:45px;
+            height:45px;
+        }
+        .cursor {
+            position:absolute;
+            top:0;
+            left:0;
+            transition: all 2s ease;
+        }
+    </style>
+</head>
+<body>
+<div class="root">
+
+    <div class="header">
+        <img src="kuzuro.png">
+    </div>
+
+    <div class="main-content">
+        <div class="logo">
+            <img src="google_logo.png" alt="Google-like Logo">
+        </div>
+        <div class="search-box">
+            <input type="text" id="txt" placeholder="여기에 검색어를 입력하십세오">
+            <div class="search-buttons">
+                <button type="button" id="btn">구글 검색</button>
+            </div>
+        </div>
+    </div>        
+</div>
+
+
+<div class="cursor">
+    <img src="cursor.png">
+</div>
+
+
+<script>
+
+ window.addEventListener("DOMContentLoaded", function() {
+
+    setTimeout(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchString = urlParams.get('q') || "";
+
+        let time = 300;
+        if(searchString.length > 20) {
+            time = 200;
+        }
+        
+        if(searchString.length > 40) {
+            time = 100;
+        }
+
+        if (searchString) {
+            const inputElement = document.querySelector(".search-box input");
+            let i = 0;
+            const interval = setInterval(function() {
+                if (i < searchString.length) {
+                    inputElement.value += searchString[i];
+                    i++;
+                } else {
+                    clearInterval(interval);
+
+                    const btnElement = document.getElementById("btn");
+                    const cursorElement = document.querySelector(".cursor");
+                    const rect = btnElement.getBoundingClientRect();    
+                    cursorElement.style.left = `${rect.left + 30}px`;
+                    cursorElement.style.top = `${rect.top + 30}px`;
+
+                    setTimeout(function() {
+                        btnElement.classList.add("active");
+                    }, 1000 * 3);
+
+                    setTimeout(function() {
+                        btnElement.classList.remove("active");
+                    }, 1000 * 3.3);
+
+
+                    setTimeout(function() {
+                        location.href = "https://www.google.co.kr/search?q=" + searchString;
+                    }, 1000 * 4);
+
+                }
+            }, time); 
+        } else {
+            setTimeout(function() {
+                location.href = "https://www.google.co.kr";
+            }, 1000 * 2);           
+        }
+    }, 1000 * 5);
+
+});
+
+setTimeout(function() {
+    const btnElement = document.getElementById('txt');
+    const cursorElement = document.querySelector('.cursor');
+    const rect = btnElement.getBoundingClientRect();   
+    cursorElement.style.left = `${rect.left + 30}px`;
+    cursorElement.style.top = `${rect.top + 30}px`; 
+}, 1000 * 2); 
+
+</script>
+</body>
+</html>
